@@ -1,0 +1,9 @@
+Crypto:
+BTC
+SHIB
+DOGE
+ELON
+Fiat:
+USD
+EUR
+XAU
