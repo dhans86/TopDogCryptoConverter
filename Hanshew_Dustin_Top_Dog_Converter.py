@@ -9,31 +9,25 @@
 
 # My project will allow you to show the fiat rate conversion for USD, EUR, or XAU(Gold) to BTC, SHIB, DOGE, or ELON
 
-
-# imports from the api, tkinter, and json
-from django.core.mail import message
-from requests import Session
-from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
 import json
-from tkinter import *
 import tkinter as tk
-from tkinter import ttk
 from functools import partial
+from tkinter import *
+from tkinter import ttk
 
 # Real time data from currency conversion using coinmarketcap api
 class CurrencyConverter:
 
     def validateLogin(username, password):
-        global tkWindow
         print("username entered :", username.get())
         print("password entered :", password.get())
         if username == '' or password == '':
-            message.set("fill the empty field!!!")
+            print("fill the empty field!!!")
         else:
-            if username == "username" and password == "password":
-                message.set("Login success")
+            if username == "" and password == "":
+                print("Login success")
             else:
-                message.set("Wrong username or password!!!")
+                print("Wrong username or password!!!")
 
     # window for username and password
     tkWindow = Tk()
@@ -75,39 +69,40 @@ class CurrencyConverter:
     btc_image.place(x=900, y=150)
     validateLogin()
     tkWindow.mainloop()
+# imports from the api, tkinter, and json
 
-    # defining the fiat amount
-    def convert(crypto, fiat, amount):
 
-        # url for coinmarket cap api
-        url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest'
-        parameters = {
-            'symbol': crypto,
-            'convert': fiat
-        }
-        headers = {
-            'Accepts': 'application/json',
-            'X-CMC_PRO_API_KEY': '4500cda3-9aea-44d5-8e16-c2bb712d74e4',
 
-        }
 
-        session = Session()
-        session.headers.update(headers)
-        int_amount = amount
+        # defining the fiat amount
+def convert(crypto, fiat, amount):
 
-        try:
-            response = session.get(url, params=parameters)
-            data = json.loads(response.text)
-            amount = round(data['data'][crypto]['quote'][fiat]['price'] * int_amount, 2)
-        except (ConnectionError, Timeout, TooManyRedirects, KeyError) as e:
-            print(e)
-            return -1
+    # url for coinmarket cap api
+    url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest'
+    parameters = {
+        'symbol': crypto,
+        'convert': fiat
+    }
+    headers = {
+        'Accepts': 'application/json',
+        'X-CMC_PRO_API_KEY': '4500cda3-9aea-44d5-8e16-c2bb712d74e4',
 
-        return amount
+    }
+    from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
+    from requests import Session
+    session = Session()
+    session.headers.update(headers)
+    int_amount = amount
 
-    def get(self):
-        pass
+    try:
+        response = session.get(url, params=parameters)
+        data = json.loads(response.text)
+        amount = round(data['data'][crypto]['quote'][fiat]['price'] * int_amount, 2)
+    except (ConnectionError, Timeout, TooManyRedirects, KeyError) as e:
+        print(e)
+        return -1
 
+    return amount
 
 # Making the tkinter window
 class App(tk.Tk):
